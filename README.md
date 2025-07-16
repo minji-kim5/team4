@@ -1,7 +1,7 @@
 # team4
 first project
-minji
 
+minji
 heejoon kang
 Hyeongyeop Ahn
 dohohyeon
