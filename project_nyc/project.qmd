@@ -1,0 +1,244 @@
+---
+title: "고객 만족도 향상을 위한 정시 항공편 추천 분석 or NYC 공항·항공사·노선별 정시성 분석을 통한 스마트 항공편 추천"
+format:
+  html:
+    code-fold: false
+jupyter: python3
+---
+
+## 고민중(삭제예정)
+
+1.  공항 : 공항 3개 기준 분석(각 10000\~12000개 사이) -\> 노선 별 분석(평균 미만 or 일정 횟수 미만 delete) -\> 날짜(분기별) 분석 -\> 지연시간 + 지연율 분석
+2.  항공사 : 항공사 16개 기준 분석 -\> 평균 미만 or 일정 횟수 미만 delete -\> 날짜(분기별)
+
+-   손님 : 두가지 분석을 통해 지연시간 또는 지연율이 적은 노선별(출발지 선택), 날짜(출발 시기 선택), 항공사(비행기)를 선택 가능 -\>
+
+#### 예시
+뉴욕 지역 3대 공항(JFK, LGA, EWR)과 주요 항공사를 기준으로, • 출발 공항별 상위 노선 10개 • 항공사별 평균 지연률 • 출발 시기(분기별)
+
+### 분석 배경
+
+> 최근 여행 고객들로부터 "비행기 지연 때문에 현지 일정이 꼬였다", "연결 교통편을 놓쳤다", "출장 도착 시간에 맞추지 못했다" 등의 불만 사례가 반복적으로 접수되고 있습니다.
+>
+> 특히 단체 여행, VIP 고객, 출장객 등 시간에 민감한 고객층일수록 항공편의 정시성이 전체 일정 만족도에 직접적인 영향을 미치며, 이는 여행사 서비스의 신뢰도와도 직결됩니다.
+>
+> 이에 따라, 여행 상품 기획 단계에서부터 지연 가능성이 낮은 노선과 항공사를 기반으로 한 상품 구성이 필요하다는 내부 요구가 커졌습니다.
+
+### 분석 활용 목적
+
+-   지연이 적은 노선과 항공사 추천
+
+> 고객의 출발 공항과 목적지를 기준으로 지연률이 낮은 항공사를 제안해 일정 차질 최소화
+
+-   성수기/비수기별 운항 안정성 파악
+
+> 출발 시기별 지연 패턴을 분석하여, 출발 일자 변경 또는 대체편 제안 가능
+
+-   VIP 고객, 단체 여행 등 민감 고객 대상 신뢰도 높은 노선 제공
+
+> 정시 출발 확률이 높은 비행편을 선별하여 고객 신뢰도 및 재이용률 향상
+
+- 요약
+
+> 이 분석은 단순 데이터 통계를 넘어, 여행사 실무에서 고객 만족을 위한 전략적 항공편 제안 도구로 활용될 수 있습니다. 지연 위험이 높은 항공편을 사전에 배제하고, 정시 도착 가능성이 높은 노선·항공사·출발 시기를 기반으로 한 스마트한 여행 상품 설계가 가능해집니다.
+
+### 최종 목표
+
+> 여행사 직원의 관점에서, 고객에게 보다 정시성이 높은 항공편을 추천하고, 여행 일정의 신뢰도와 만족도를 높이기 위해 본 분석을 수행하였습니다.
+
+
+
+
+
+
+
+### 슬라이드 제목 예시
+1. “데이터로 고르는 정시 항공편” 
+2. “지연 없는 여행을 위한 항공사·노선 분석” 
+3. “여행사를 위한 항공 지연 패턴 인사이트” 
+4. “출발 전에 이미 정시 도착이 보장된 노선은?” 
+5. “공항·노선·항공사, 어디서 늦고 어디가 정확한가?”
+
+## 분석주제
+
+### 출발 공항별 상위노선 10개 분석
+
+본 분석에서는 뉴욕 지역의 세 주요 공항(JFK, LGA, EWR)을 기준으로, 각 공항에서 출발한 항공편 중 **도착지 기준 상위 10개 노선**을 추출하여 비교하였습니다.
+
+이를 통해 공항별로 **주요 연결 도시**, **이용량이 높은 노선**, **지연 시간(출발·도착)** 등의 특성을 파악하고자 하였습니다.
+
+```{python}
+import pandas as pd
+
+#data 불러오기
+flights_data = pd.read_csv("./data/nycflights.csv")
+flights_data.head()
+
+pd.unique(flights_data["carrier"]) 
+#항공사 코드
+# 'VX', 'DL', '9E', 'AA', 'WN', 'B6', 'EV', 'FL', 'UA', 'US', 'MQ','F9', 'YV', 'AS', 'HA', 'OO'
+
+pd.unique(flights_data["tailnum"])
+#항공기 등록번호(꼬리번호)
+# array(['N626VA', 'N3760C', 'N712TW', ..., 'N720WN', 'N534US', 'N924WN'],shape=(3490,), dtype=object)
+
+pd.unique(flights_data["flight"])
+#항공편 번호
+# array([ 407,  329,  422, ...,  552, 3986,  819], shape=(2951,))
+
+pd.unique(flights_data["origin"])
+#출발 공항 코드
+#array(['JFK', 'LGA', 'EWR'], dtype=object)
+
+pd.unique(flights_data["dest"])
+# array(['LAX', 'SJU', 'TPA', 'ORF', 'ORD', 'HOU', 'IAD', 'MIA', 'JAX',
+#        'ROC', 'RSW', 'DAY', 'ATL', 'BTV', 'BUF', 'DCA', 'FLL', 'SFO',
+#        'PIT', 'PBI', 'DEN', 'CLT', 'CMH', 'LAS', 'DTW', 'BNA', 'PHL',
+#        'MKE', 'DFW', 'SNA', 'CLE', 'MCO', 'BQN', 'ABQ', 'BOS', 'IAH',
+#        'OMA', 'SYR', 'EGE', 'PWM', 'AUS', 'STT', 'MSY', 'CVG', 'RDU',
+#        'MDW', 'IND', 'TYS', 'STL', 'TUL', 'JAC', 'SEA', 'MSP', 'BWI',
+#        'SAT', 'CRW', 'BUR', 'SLC', 'CHS', 'RIC', 'SAN', 'XNA', 'MEM',
+#        'SRQ', 'PHX', 'MCI', 'CAK', 'SAV', 'SDF', 'TVC', 'OAK', 'GSP',
+#        'ALB', 'BDL', 'DSM', 'LGB', 'PDX', 'MSN', 'SMF', 'GRR', 'GSO',
+#        'BGR', 'ACK', 'SJC', 'AVL', 'OKC', 'PVD', 'MHT', 'HNL', 'MTJ',
+#        'BHM', 'PSE', 'ILM', 'MVY', 'HDN', 'BZN', 'CHO', 'CAE', 'EYW',
+#        'ANC', 'MYR', 'PSP'], dtype=object), shape=(102,)
+
+
+
+flights_data.loc[:,:].info()
+#결측치 X
+
+
+
+grouped_by_origin = flights_data.groupby("origin")
+jfk_flights = grouped_by_origin.get_group("JFK") #총 10897개 
+jfk_flights
+jfk_flights_destinations = jfk_flights["dest"].unique() #JFK <-> 도착지(66개)
+jfk_flights_destinations
+# array(['LAX', 'SJU', 'TPA', 'IAD', 'ROC', 'BTV', 'FLL', 'SFO', 'DEN',
+#        'CLT', 'LAS', 'PHL', 'DCA', 'JAX', 'HOU', 'ABQ', 'BUF', 'EGE',
+#        'AUS', 'STT', 'MSY', 'IAH', 'RDU', 'IND', 'DTW', 'SEA', 'RSW',
+#        'MSP', 'BNA', 'BOS', 'BWI', 'SAT', 'ATL', 'MIA', 'BUR', 'SLC',
+#        'ORD', 'CHS', 'PBI', 'PIT', 'PHX', 'MCO', 'OAK', 'CLE', 'LGB',
+#        'SAN', 'SMF', 'CMH', 'RIC', 'CVG', 'SYR', 'SRQ', 'PWM', 'DFW',
+#        'ORF', 'ACK', 'SJC', 'BQN', 'MKE', 'HNL', 'PDX', 'PSE', 'MVY',
+#        'MCI', 'PSP', 'SDF'], dtype=object,shape=(66,))
+
+# JFK 출발 / 도착지 기준 상위 10개
+jfk_top10_dest = jfk_flights["dest"].value_counts().head(10)
+jfk_top10_dest_list = jfk_top10_dest.index
+# JFK 출발 / 도착지 지연정보
+jfk_delay_info = (jfk_flights[jfk_flights["dest"].isin(list(jfk_top10_dest_list))]
+                  .groupby("dest")[["arr_time", "arr_delay"]]
+                  .mean()
+                  .sort_values("arr_delay",ascending=False)
+                )   
+jfk_delay_info
+
+
+lga_flights = grouped_by_origin.get_group("LGA") #총 10067개 
+lga_flights
+lga_flights_destinations = lga_flights["dest"].unique() #LGA <-> 도착지(65개)
+lga_flights_destinations
+# array(['ORF', 'ORD', 'MIA', 'RSW', 'ATL', 'PIT', 'PBI', 'CLT', 'CMH',
+#        'DTW', 'BNA', 'DEN', 'DFW', 'CLE', 'MCO', 'BOS', 'IAH', 'SYR',
+#        'MDW', 'IND', 'STL', 'ROC', 'FLL', 'RDU', 'CRW', 'TPA', 'XNA',
+#        'MEM', 'SRQ', 'CAK', 'MKE', 'TVC', 'MSP', 'MSY', 'DCA', 'SAV',
+#        'PHL', 'CVG', 'CHS', 'IAD', 'GSO', 'BGR', 'BTV', 'TYS', 'PWM',
+#        'BUF', 'MCI', 'GRR', 'DSM', 'RIC', 'OMA', 'MHT', 'HOU', 'BHM',
+#        'DAY', 'ILM', 'SDF', 'MSN', 'JAX', 'GSP', 'CHO', 'EYW', 'AVL',
+#        'BWI', 'CAE'], dtype=object, shape=(65,))
+
+# LGA 출발 비행편에서 도착지 기준 상위 10개
+lga_top10_dest = lga_flights["dest"].value_counts().head(10)
+lga_top10_dest_list = lga_top10_dest.index
+# LGA 출발 / 도착지 지연정보
+lga_delay_info = (lga_flights[lga_flights["dest"].isin(list(lga_top10_dest_list))]
+                  .groupby("dest")[["arr_time", "arr_delay"]]
+                  .mean()
+                  .sort_values("arr_delay",ascending=False)
+                )   
+lga_delay_info
+
+
+ewr_flights = grouped_by_origin.get_group("EWR") #총 11771개 
+ewr_flights
+ewr_flights_destinations = ewr_flights["dest"].unique() #EWR <-> 도착지(83개)
+ewr_flights_destinations
+# array(['HOU', 'JAX', 'DAY', 'BUF', 'DCA', 'ORD', 'PBI', 'MKE', 'SNA',
+#        'TPA', 'LAS', 'CLT', 'DTW', 'BQN', 'CLE', 'OMA', 'MCO', 'PWM',
+#        'IAD', 'ATL', 'CVG', 'FLL', 'RDU', 'DEN', 'DFW', 'LAX', 'BOS',
+#        'TYS', 'STL', 'TUL', 'JAC', 'IAH', 'MIA', 'RIC', 'SAN', 'BNA',
+#        'SAT', 'MDW', 'PHX', 'MCI', 'MEM', 'SEA', 'SAV', 'SDF', 'CMH',
+#        'SFO', 'MSP', 'AUS', 'RSW', 'GSP', 'ALB', 'BDL', 'DSM', 'PDX',
+#        'MSN', 'CHS', 'GRR', 'MSY', 'IND', 'GSO', 'BWI', 'SJU', 'XNA',
+#        'ROC', 'AVL', 'OKC', 'PVD', 'SYR', 'MHT', 'BTV', 'ORF', 'MTJ',
+#        'STT', 'SLC', 'PIT', 'HNL', 'EGE', 'HDN', 'BZN', 'TVC', 'CAE',
+#        'ANC', 'MYR'], dtype=object, shape=(83,))
+
+# EWR 출발 비행편에서 도착지 기준 상위 10개
+ewr_top10_dest = ewr_flights["dest"].value_counts().head(10)
+ewr_top10_dest_list = ewr_top10_dest.index
+# EWR 출발 / 도착지 지연정보
+ewr_delay_info = (ewr_flights[ewr_flights["dest"].isin(list(ewr_top10_dest_list))]
+                  .groupby("dest")[["arr_time", "arr_delay"]]
+                  .mean()
+                  .sort_values("arr_delay",ascending=False)
+                )   
+ewr_delay_info
+```
+
+### 항공사별 지연률 분석
+
+본 분석에서는 각 항공사를 기준으로 **출발 지연률 및 도착 지연률**을 계산하여 비교하였습니다.
+
+지연률은 전체 운항 횟수 대비 **지연이 발생한 비율**로 산출하였으며, 이를 통해 항공사별 **정시 운항 성과**와 **운항 신뢰도**를 파악하고자 하였습니다.
+
+------------------------------------------------------------------------
+
+```{python}
+import pandas as pd
+import numpy as np
+import nycflights13 as flights
+df_flights = flights.flights
+df_airlines = flights.airlines
+df_airports = flights.airports
+df_planes = flights.planes
+df_weather = flights.weather
+df_flights.head()
+df_airlines
+np.unique(df_flights['origin'])
+np.unique(df_flights['carrier'])  #항공사: 16개
+len(np.unique(df_flights['dest']))  #도착지: 105개
+
+
+# 항공사별 운행 횟수 구하기
+total=df_flights.groupby('carrier').size()
+
+# 항공사별 지연 총 횟수 구하기
+arr_del=df_flights[df_flights['arr_delay']>0].groupby('carrier').size()
+
+# 운행횟수 대비 지연횟수 
+summary=pd.DataFrame({'total_flights':total, 'delayed_flights': arr_del})
+
+# 지연기록이 없는 항공사는 0처리
+summary['delayed_flights']=summary['delayed_flights'].fillna(0)
+
+# 지연률 (%)
+summary['delay_rate(%)']=(summary['delayed_flights'])/summary['total_flights']*100
+
+summary.sort_values('delay_rate(%)')
+
+#소규모 항공사는 데이터가 너무 적어서 운행횟수의 평균을 구하고, 그 이상인 항공사만 추출 
+flights_mean=summary['total_flights'].mean()
+filtered_summary=summary[summary['total_flights']>flights_mean]
+
+filtered_summary.sort_values('delay_rate(%)')
+# 상위 6개의 항공사 중 AA 항공사가 가장 지연율이 적음
+#  or 상위 3개 항공사 중에는 UA 항공사가 가장 지연율이 적음
+# 상위 3개 항공사 추출할 거면
+# top3=summary.nlargest(3,'total_flights')
+
+
+```

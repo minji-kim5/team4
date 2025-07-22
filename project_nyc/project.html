@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>고객 만족도 향상을 위한 정시 항공편 추천 분석 or NYC 공항·항공사·노선별 정시성 분석을 통한 스마트 항공편 추천</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="project_files/libs/clipboard/clipboard.min.js"></script>
+<script src="project_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="project_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="project_files/libs/quarto-html/popper.min.js"></script>
+<script src="project_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="project_files/libs/quarto-html/anchor.min.js"></script>
+<link href="project_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="project_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="project_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="project_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">고객 만족도 향상을 위한 정시 항공편 추천 분석 or NYC 공항·항공사·노선별 정시성 분석을 통한 스마트 항공편 추천</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="고민중삭제예정" class="level2">
+<h2 class="anchored" data-anchor-id="고민중삭제예정">고민중(삭제예정)</h2>
+<ol type="1">
+<li>공항 : 공항 3개 기준 분석(각 10000~12000개 사이) -&gt; 노선 별 분석(평균 미만 or 일정 횟수 미만 delete) -&gt; 날짜(분기별) 분석 -&gt; 지연시간 + 지연율 분석</li>
+<li>항공사 : 항공사 16개 기준 분석 -&gt; 평균 미만 or 일정 횟수 미만 delete -&gt; 날짜(분기별)</li>
+</ol>
+<ul>
+<li>손님 : 두가지 분석을 통해 지연시간 또는 지연율이 적은 노선별(출발지 선택), 날짜(출발 시기 선택), 항공사(비행기)를 선택 가능 -&gt;</li>
+</ul>
+<section id="예시" class="level4">
+<h4 class="anchored" data-anchor-id="예시">예시</h4>
+<p>뉴욕 지역 3대 공항(JFK, LGA, EWR)과 주요 항공사를 기준으로, • 출발 공항별 상위 노선 10개 • 항공사별 평균 지연률 • 출발 시기(분기별)</p>
+</section>
+<section id="분석-배경" class="level3">
+<h3 class="anchored" data-anchor-id="분석-배경">분석 배경</h3>
+<blockquote class="blockquote">
+<p>최근 여행 고객들로부터 “비행기 지연 때문에 현지 일정이 꼬였다”, “연결 교통편을 놓쳤다”, “출장 도착 시간에 맞추지 못했다” 등의 불만 사례가 반복적으로 접수되고 있습니다.</p>
+<p>특히 단체 여행, VIP 고객, 출장객 등 시간에 민감한 고객층일수록 항공편의 정시성이 전체 일정 만족도에 직접적인 영향을 미치며, 이는 여행사 서비스의 신뢰도와도 직결됩니다.</p>
+<p>이에 따라, 여행 상품 기획 단계에서부터 지연 가능성이 낮은 노선과 항공사를 기반으로 한 상품 구성이 필요하다는 내부 요구가 커졌습니다.</p>
+</blockquote>
+</section>
+<section id="분석-활용-목적" class="level3">
+<h3 class="anchored" data-anchor-id="분석-활용-목적">분석 활용 목적</h3>
+<ul>
+<li>지연이 적은 노선과 항공사 추천</li>
+</ul>
+<blockquote class="blockquote">
+<p>고객의 출발 공항과 목적지를 기준으로 지연률이 낮은 항공사를 제안해 일정 차질 최소화</p>
+</blockquote>
+<ul>
+<li>성수기/비수기별 운항 안정성 파악</li>
+</ul>
+<blockquote class="blockquote">
+<p>출발 시기별 지연 패턴을 분석하여, 출발 일자 변경 또는 대체편 제안 가능</p>
+</blockquote>
+<ul>
+<li>VIP 고객, 단체 여행 등 민감 고객 대상 신뢰도 높은 노선 제공</li>
+</ul>
+<blockquote class="blockquote">
+<p>정시 출발 확률이 높은 비행편을 선별하여 고객 신뢰도 및 재이용률 향상</p>
+</blockquote>
+<ul>
+<li>요약</li>
+</ul>
+<blockquote class="blockquote">
+<p>이 분석은 단순 데이터 통계를 넘어, 여행사 실무에서 고객 만족을 위한 전략적 항공편 제안 도구로 활용될 수 있습니다. 지연 위험이 높은 항공편을 사전에 배제하고, 정시 도착 가능성이 높은 노선·항공사·출발 시기를 기반으로 한 스마트한 여행 상품 설계가 가능해집니다.</p>
+</blockquote>
+</section>
+<section id="최종-목표" class="level3">
+<h3 class="anchored" data-anchor-id="최종-목표">최종 목표</h3>
+<blockquote class="blockquote">
+<p>여행사 직원의 관점에서, 고객에게 보다 정시성이 높은 항공편을 추천하고, 여행 일정의 신뢰도와 만족도를 높이기 위해 본 분석을 수행하였습니다.</p>
+</blockquote>
+</section>
+<section id="슬라이드-제목-예시" class="level3">
+<h3 class="anchored" data-anchor-id="슬라이드-제목-예시">슬라이드 제목 예시</h3>
+<ol type="1">
+<li>“데이터로 고르는 정시 항공편”</li>
+<li>“지연 없는 여행을 위한 항공사·노선 분석”</li>
+<li>“여행사를 위한 항공 지연 패턴 인사이트”</li>
+<li>“출발 전에 이미 정시 도착이 보장된 노선은?”</li>
+<li>“공항·노선·항공사, 어디서 늦고 어디가 정확한가?”</li>
+</ol>
+</section>
+</section>
+<section id="분석주제" class="level2">
+<h2 class="anchored" data-anchor-id="분석주제">분석주제</h2>
+<section id="출발-공항별-상위노선-10개-분석" class="level3">
+<h3 class="anchored" data-anchor-id="출발-공항별-상위노선-10개-분석">출발 공항별 상위노선 10개 분석</h3>
+<p>본 분석에서는 뉴욕 지역의 세 주요 공항(JFK, LGA, EWR)을 기준으로, 각 공항에서 출발한 항공편 중 <strong>도착지 기준 상위 10개 노선</strong>을 추출하여 비교하였습니다.</p>
+<p>이를 통해 공항별로 <strong>주요 연결 도시</strong>, <strong>이용량이 높은 노선</strong>, <strong>지연 시간(출발·도착)</strong> 등의 특성을 파악하고자 하였습니다.</p>
+<div id="c7eea30f" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#data 불러오기</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>flights_data <span class="op">=</span> pd.read_csv(<span class="st">"./data/nycflights.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>flights_data.head()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>pd.unique(flights_data[<span class="st">"carrier"</span>]) </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#항공사 코드</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 'VX', 'DL', '9E', 'AA', 'WN', 'B6', 'EV', 'FL', 'UA', 'US', 'MQ','F9', 'YV', 'AS', 'HA', 'OO'</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>pd.unique(flights_data[<span class="st">"tailnum"</span>])</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#항공기 등록번호(꼬리번호)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># array(['N626VA', 'N3760C', 'N712TW', ..., 'N720WN', 'N534US', 'N924WN'],shape=(3490,), dtype=object)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>pd.unique(flights_data[<span class="st">"flight"</span>])</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#항공편 번호</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># array([ 407,  329,  422, ...,  552, 3986,  819], shape=(2951,))</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>pd.unique(flights_data[<span class="st">"origin"</span>])</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#출발 공항 코드</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#array(['JFK', 'LGA', 'EWR'], dtype=object)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>pd.unique(flights_data[<span class="st">"dest"</span>])</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># array(['LAX', 'SJU', 'TPA', 'ORF', 'ORD', 'HOU', 'IAD', 'MIA', 'JAX',</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#        'ROC', 'RSW', 'DAY', 'ATL', 'BTV', 'BUF', 'DCA', 'FLL', 'SFO',</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#        'PIT', 'PBI', 'DEN', 'CLT', 'CMH', 'LAS', 'DTW', 'BNA', 'PHL',</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#        'MKE', 'DFW', 'SNA', 'CLE', 'MCO', 'BQN', 'ABQ', 'BOS', 'IAH',</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#        'OMA', 'SYR', 'EGE', 'PWM', 'AUS', 'STT', 'MSY', 'CVG', 'RDU',</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#        'MDW', 'IND', 'TYS', 'STL', 'TUL', 'JAC', 'SEA', 'MSP', 'BWI',</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#        'SAT', 'CRW', 'BUR', 'SLC', 'CHS', 'RIC', 'SAN', 'XNA', 'MEM',</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#        'SRQ', 'PHX', 'MCI', 'CAK', 'SAV', 'SDF', 'TVC', 'OAK', 'GSP',</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#        'ALB', 'BDL', 'DSM', 'LGB', 'PDX', 'MSN', 'SMF', 'GRR', 'GSO',</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">#        'BGR', 'ACK', 'SJC', 'AVL', 'OKC', 'PVD', 'MHT', 'HNL', 'MTJ',</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#        'BHM', 'PSE', 'ILM', 'MVY', 'HDN', 'BZN', 'CHO', 'CAE', 'EYW',</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">#        'ANC', 'MYR', 'PSP'], dtype=object), shape=(102,)</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>flights_data.loc[:,:].info()</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#결측치 X</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>grouped_by_origin <span class="op">=</span> flights_data.groupby(<span class="st">"origin"</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>jfk_flights <span class="op">=</span> grouped_by_origin.get_group(<span class="st">"JFK"</span>) <span class="co">#총 10897개 </span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>jfk_flights</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>jfk_flights_destinations <span class="op">=</span> jfk_flights[<span class="st">"dest"</span>].unique() <span class="co">#JFK &lt;-&gt; 도착지(66개)</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>jfk_flights_destinations</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># array(['LAX', 'SJU', 'TPA', 'IAD', 'ROC', 'BTV', 'FLL', 'SFO', 'DEN',</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co">#        'CLT', 'LAS', 'PHL', 'DCA', 'JAX', 'HOU', 'ABQ', 'BUF', 'EGE',</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co">#        'AUS', 'STT', 'MSY', 'IAH', 'RDU', 'IND', 'DTW', 'SEA', 'RSW',</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="co">#        'MSP', 'BNA', 'BOS', 'BWI', 'SAT', 'ATL', 'MIA', 'BUR', 'SLC',</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co">#        'ORD', 'CHS', 'PBI', 'PIT', 'PHX', 'MCO', 'OAK', 'CLE', 'LGB',</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co">#        'SAN', 'SMF', 'CMH', 'RIC', 'CVG', 'SYR', 'SRQ', 'PWM', 'DFW',</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co">#        'ORF', 'ACK', 'SJC', 'BQN', 'MKE', 'HNL', 'PDX', 'PSE', 'MVY',</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="co">#        'MCI', 'PSP', 'SDF'], dtype=object,shape=(66,))</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="co"># JFK 출발 / 도착지 기준 상위 10개</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>jfk_top10_dest <span class="op">=</span> jfk_flights[<span class="st">"dest"</span>].value_counts().head(<span class="dv">10</span>)</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>jfk_top10_dest_list <span class="op">=</span> jfk_top10_dest.index</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co"># JFK 출발 / 도착지 지연정보</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>jfk_delay_info <span class="op">=</span> (jfk_flights[jfk_flights[<span class="st">"dest"</span>].isin(<span class="bu">list</span>(jfk_top10_dest_list))]</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>                  .groupby(<span class="st">"dest"</span>)[[<span class="st">"arr_time"</span>, <span class="st">"arr_delay"</span>]]</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>                  .mean()</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>                  .sort_values(<span class="st">"arr_delay"</span>,ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>                )   </span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>jfk_delay_info</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>lga_flights <span class="op">=</span> grouped_by_origin.get_group(<span class="st">"LGA"</span>) <span class="co">#총 10067개 </span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>lga_flights</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>lga_flights_destinations <span class="op">=</span> lga_flights[<span class="st">"dest"</span>].unique() <span class="co">#LGA &lt;-&gt; 도착지(65개)</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>lga_flights_destinations</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="co"># array(['ORF', 'ORD', 'MIA', 'RSW', 'ATL', 'PIT', 'PBI', 'CLT', 'CMH',</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="co">#        'DTW', 'BNA', 'DEN', 'DFW', 'CLE', 'MCO', 'BOS', 'IAH', 'SYR',</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="co">#        'MDW', 'IND', 'STL', 'ROC', 'FLL', 'RDU', 'CRW', 'TPA', 'XNA',</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="co">#        'MEM', 'SRQ', 'CAK', 'MKE', 'TVC', 'MSP', 'MSY', 'DCA', 'SAV',</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="co">#        'PHL', 'CVG', 'CHS', 'IAD', 'GSO', 'BGR', 'BTV', 'TYS', 'PWM',</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="co">#        'BUF', 'MCI', 'GRR', 'DSM', 'RIC', 'OMA', 'MHT', 'HOU', 'BHM',</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co">#        'DAY', 'ILM', 'SDF', 'MSN', 'JAX', 'GSP', 'CHO', 'EYW', 'AVL',</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="co">#        'BWI', 'CAE'], dtype=object, shape=(65,))</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="co"># LGA 출발 비행편에서 도착지 기준 상위 10개</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>lga_top10_dest <span class="op">=</span> lga_flights[<span class="st">"dest"</span>].value_counts().head(<span class="dv">10</span>)</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>lga_top10_dest_list <span class="op">=</span> lga_top10_dest.index</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="co"># LGA 출발 / 도착지 지연정보</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>lga_delay_info <span class="op">=</span> (lga_flights[lga_flights[<span class="st">"dest"</span>].isin(<span class="bu">list</span>(lga_top10_dest_list))]</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>                  .groupby(<span class="st">"dest"</span>)[[<span class="st">"arr_time"</span>, <span class="st">"arr_delay"</span>]]</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>                  .mean()</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>                  .sort_values(<span class="st">"arr_delay"</span>,ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>                )   </span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>lga_delay_info</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>ewr_flights <span class="op">=</span> grouped_by_origin.get_group(<span class="st">"EWR"</span>) <span class="co">#총 11771개 </span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>ewr_flights</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>ewr_flights_destinations <span class="op">=</span> ewr_flights[<span class="st">"dest"</span>].unique() <span class="co">#EWR &lt;-&gt; 도착지(83개)</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>ewr_flights_destinations</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="co"># array(['HOU', 'JAX', 'DAY', 'BUF', 'DCA', 'ORD', 'PBI', 'MKE', 'SNA',</span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="co">#        'TPA', 'LAS', 'CLT', 'DTW', 'BQN', 'CLE', 'OMA', 'MCO', 'PWM',</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="co">#        'IAD', 'ATL', 'CVG', 'FLL', 'RDU', 'DEN', 'DFW', 'LAX', 'BOS',</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="co">#        'TYS', 'STL', 'TUL', 'JAC', 'IAH', 'MIA', 'RIC', 'SAN', 'BNA',</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="co">#        'SAT', 'MDW', 'PHX', 'MCI', 'MEM', 'SEA', 'SAV', 'SDF', 'CMH',</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="co">#        'SFO', 'MSP', 'AUS', 'RSW', 'GSP', 'ALB', 'BDL', 'DSM', 'PDX',</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="co">#        'MSN', 'CHS', 'GRR', 'MSY', 'IND', 'GSO', 'BWI', 'SJU', 'XNA',</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="co">#        'ROC', 'AVL', 'OKC', 'PVD', 'SYR', 'MHT', 'BTV', 'ORF', 'MTJ',</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="co">#        'STT', 'SLC', 'PIT', 'HNL', 'EGE', 'HDN', 'BZN', 'TVC', 'CAE',</span></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="co">#        'ANC', 'MYR'], dtype=object, shape=(83,))</span></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="co"># EWR 출발 비행편에서 도착지 기준 상위 10개</span></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>ewr_top10_dest <span class="op">=</span> ewr_flights[<span class="st">"dest"</span>].value_counts().head(<span class="dv">10</span>)</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>ewr_top10_dest_list <span class="op">=</span> ewr_top10_dest.index</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a><span class="co"># EWR 출발 / 도착지 지연정보</span></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>ewr_delay_info <span class="op">=</span> (ewr_flights[ewr_flights[<span class="st">"dest"</span>].isin(<span class="bu">list</span>(ewr_top10_dest_list))]</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>                  .groupby(<span class="st">"dest"</span>)[[<span class="st">"arr_time"</span>, <span class="st">"arr_delay"</span>]]</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>                  .mean()</span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>                  .sort_values(<span class="st">"arr_delay"</span>,ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>                )   </span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>ewr_delay_info</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 32735 entries, 0 to 32734
+Data columns (total 16 columns):
+ #   Column     Non-Null Count  Dtype 
+---  ------     --------------  ----- 
+ 0   year       32735 non-null  int64 
+ 1   month      32735 non-null  int64 
+ 2   day        32735 non-null  int64 
+ 3   dep_time   32735 non-null  int64 
+ 4   dep_delay  32735 non-null  int64 
+ 5   arr_time   32735 non-null  int64 
+ 6   arr_delay  32735 non-null  int64 
+ 7   carrier    32735 non-null  object
+ 8   tailnum    32735 non-null  object
+ 9   flight     32735 non-null  int64 
+ 10  origin     32735 non-null  object
+ 11  dest       32735 non-null  object
+ 12  air_time   32735 non-null  int64 
+ 13  distance   32735 non-null  int64 
+ 14  hour       32735 non-null  int64 
+ 15  minute     32735 non-null  int64 
+dtypes: int64(12), object(4)
+memory usage: 4.0+ MB</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">arr_time</th>
+<th data-quarto-table-cell-role="th">arr_delay</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">dest</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ATL</td>
+<td>1520.441406</td>
+<td>14.722656</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">CLT</td>
+<td>1354.673913</td>
+<td>11.411067</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">FLL</td>
+<td>1438.878453</td>
+<td>10.483425</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">ORD</td>
+<td>1446.196339</td>
+<td>8.041597</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">IAH</td>
+<td>1505.840295</td>
+<td>5.604423</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LAX</td>
+<td>1615.435897</td>
+<td>5.250000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BOS</td>
+<td>1446.774067</td>
+<td>4.275049</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">SFO</td>
+<td>1585.066277</td>
+<td>4.095517</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MCO</td>
+<td>1435.856263</td>
+<td>2.260780</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">DFW</td>
+<td>1589.996732</td>
+<td>-1.111111</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="항공사별-지연률-분석" class="level3">
+<h3 class="anchored" data-anchor-id="항공사별-지연률-분석">항공사별 지연률 분석</h3>
+<p>본 분석에서는 각 항공사를 기준으로 <strong>출발 지연률 및 도착 지연률</strong>을 계산하여 비교하였습니다.</p>
+<p>지연률은 전체 운항 횟수 대비 <strong>지연이 발생한 비율</strong>로 산출하였으며, 이를 통해 항공사별 <strong>정시 운항 성과</strong>와 <strong>운항 신뢰도</strong>를 파악하고자 하였습니다.</p>
+<hr>
+<div id="79d5ef6e" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nycflights13 <span class="im">as</span> flights</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df_flights <span class="op">=</span> flights.flights</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>df_airlines <span class="op">=</span> flights.airlines</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>df_airports <span class="op">=</span> flights.airports</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>df_planes <span class="op">=</span> flights.planes</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>df_weather <span class="op">=</span> flights.weather</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>df_flights.head()</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>df_airlines</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>np.unique(df_flights[<span class="st">'origin'</span>])</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>np.unique(df_flights[<span class="st">'carrier'</span>])  <span class="co">#항공사: 16개</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(np.unique(df_flights[<span class="st">'dest'</span>]))  <span class="co">#도착지: 105개</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 항공사별 운행 횟수 구하기</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>total<span class="op">=</span>df_flights.groupby(<span class="st">'carrier'</span>).size()</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 항공사별 지연 총 횟수 구하기</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>arr_del<span class="op">=</span>df_flights[df_flights[<span class="st">'arr_delay'</span>]<span class="op">&gt;</span><span class="dv">0</span>].groupby(<span class="st">'carrier'</span>).size()</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 운행횟수 대비 지연횟수 </span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>summary<span class="op">=</span>pd.DataFrame({<span class="st">'total_flights'</span>:total, <span class="st">'delayed_flights'</span>: arr_del})</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 지연기록이 없는 항공사는 0처리</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>summary[<span class="st">'delayed_flights'</span>]<span class="op">=</span>summary[<span class="st">'delayed_flights'</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 지연률 (%)</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>summary[<span class="st">'delay_rate(%)'</span>]<span class="op">=</span>(summary[<span class="st">'delayed_flights'</span>])<span class="op">/</span>summary[<span class="st">'total_flights'</span>]<span class="op">*</span><span class="dv">100</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>summary.sort_values(<span class="st">'delay_rate(%)'</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">#소규모 항공사는 데이터가 너무 적어서 운행횟수의 평균을 구하고, 그 이상인 항공사만 추출 </span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>flights_mean<span class="op">=</span>summary[<span class="st">'total_flights'</span>].mean()</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>filtered_summary<span class="op">=</span>summary[summary[<span class="st">'total_flights'</span>]<span class="op">&gt;</span>flights_mean]</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>filtered_summary.sort_values(<span class="st">'delay_rate(%)'</span>)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 6개의 항공사 중 AA 항공사가 가장 지연율이 적음</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  or 상위 3개 항공사 중에는 UA 항공사가 가장 지연율이 적음</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 3개 항공사 추출할 거면</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co"># top3=summary.nlargest(3,'total_flights')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/bagooni/miniconda3/envs/team4_mac/lib/python3.11/site-packages/nycflights13/__init__.py:2: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools&lt;81.
+  from pkg_resources import resource_filename as _rf</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">total_flights</th>
+<th data-quarto-table-cell-role="th">delayed_flights</th>
+<th data-quarto-table-cell-role="th">delay_rate(%)</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">carrier</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">AA</td>
+<td>32729</td>
+<td>10706</td>
+<td>32.711051</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">DL</td>
+<td>48110</td>
+<td>16413</td>
+<td>34.115568</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">UA</td>
+<td>58665</td>
+<td>22222</td>
+<td>37.879485</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">B6</td>
+<td>54635</td>
+<td>23609</td>
+<td>43.212227</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MQ</td>
+<td>26397</td>
+<td>11693</td>
+<td>44.296700</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">EV</td>
+<td>54173</td>
+<td>24484</td>
+<td>45.195946</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
