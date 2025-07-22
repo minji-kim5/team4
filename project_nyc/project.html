@@ -172,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="출발-공항별-상위노선-10개-분석">출발 공항별 상위노선 10개 분석</h3>
 <p>본 분석에서는 뉴욕 지역의 세 주요 공항(JFK, LGA, EWR)을 기준으로, 각 공항에서 출발한 항공편 중 <strong>도착지 기준 상위 10개 노선</strong>을 추출하여 비교하였습니다.</p>
 <p>이를 통해 공항별로 <strong>주요 연결 도시</strong>, <strong>이용량이 높은 노선</strong>, <strong>지연 시간(출발·도착)</strong> 등의 특성을 파악하고자 하였습니다.</p>
-<div id="6151bafa" class="cell" data-execution_count="1">
+<div id="c7eea30f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#data 불러오기</span></span>
@@ -317,7 +317,7 @@ Data columns (total 16 columns):
 dtypes: int64(12), object(4)
 memory usage: 4.0+ MB</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="37">
+<div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -397,7 +397,7 @@ memory usage: 4.0+ MB</code></pre>
 <p>본 분석에서는 각 항공사를 기준으로 <strong>출발 지연률 및 도착 지연률</strong>을 계산하여 비교하였습니다.</p>
 <p>지연률은 전체 운항 횟수 대비 <strong>지연이 발생한 비율</strong>로 산출하였으며, 이를 통해 항공사별 <strong>정시 운항 성과</strong>와 <strong>운항 신뢰도</strong>를 파악하고자 하였습니다.</p>
 <hr>
-<div id="9c87ad16" class="cell" data-execution_count="2">
+<div id="79d5ef6e" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nycflights13 <span class="im">as</span> flights</span>
@@ -439,7 +439,11 @@ memory usage: 4.0+ MB</code></pre>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  or 상위 3개 항공사 중에는 UA 항공사가 가장 지연율이 적음</span></span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 3개 항공사 추출할 거면</span></span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co"># top3=summary.nlargest(3,'total_flights')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="38">
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/bagooni/miniconda3/envs/team4_mac/lib/python3.11/site-packages/nycflights13/__init__.py:2: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools&lt;81.
+  from pkg_resources import resource_filename as _rf</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
