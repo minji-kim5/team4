@@ -17,6 +17,7 @@ flights_data
 #data 불러오기
 flights_data = pd.read_csv("./data/nycflights.csv")
 flights_data.head()
+flights_data.info()
 
 pd.unique(flights_data["carrier"]) 
 #항공사 코드
@@ -58,8 +59,8 @@ flights_data.loc[:,:].info()
 grouped_by_origin = flights_data.groupby("origin")
 jfk_flights = grouped_by_origin.get_group("JFK") #총 10897개 
 jfk_flights
-jfk_flights_destinations = jfk_flights["dest"].unique() #JFK <-> 도착지(66개)
-jfk_flights_destinations
+# jfk_flights_destinations = jfk_flights["dest"].unique() #JFK <-> 도착지(66개)
+# jfk_flights_destinations
 jfk_flights["is_delayed"] = jfk_flights["arr_delay"] > 15
 # array(['LAX', 'SJU', 'TPA', 'IAD', 'ROC', 'BTV', 'FLL', 'SFO', 'DEN',
 #        'CLT', 'LAS', 'PHL', 'DCA', 'JAX', 'HOU', 'ABQ', 'BUF', 'EGE',
@@ -71,20 +72,20 @@ jfk_flights["is_delayed"] = jfk_flights["arr_delay"] > 15
 #        'MCI', 'PSP', 'SDF'], dtype=object,shape=(66,))
 
 # # JFK 출발 / 도착지 기준 평균 이상 노선만 살리기
-jfk_dst_mean = jfk_flights["dest"].value_counts().mean()  # 각 노선의 평균 편수 :약 165개
-jfk_top_dests = jfk_flights["dest"].value_counts()
-top_dest_list = jfk_top_dests[jfk_top_dests > jfk_dst_mean].index
-jfk_dest = jfk_flights[jfk_flights["dest"].isin(top_dest_list)] # 평균 미만 노선은 버리기
-jfk_dest["dest"]
+# jfk_dst_mean = jfk_flights["dest"].value_counts().mean()  # 각 노선의 평균 편수 :약 165개
+# jfk_top_dests = jfk_flights["dest"].value_counts()
+# top_dest_list = jfk_top_dests[jfk_top_dests > jfk_dst_mean].index
+# jfk_dest = jfk_flights[jfk_flights["dest"].isin(top_dest_list)] # 평균 미만 노선은 버리기
+# jfk_dest["dest"]
 
 # # JFK 출발 / 도착지 기준 상위 10개
-# jfk_top10_dest = jfk_flights["dest"].value_counts().head(10)
-# jfk_top10_dest_list = jfk_top10_dest.index
+jfk_top10_dest = jfk_flights["dest"].value_counts().head(10)
+jfk_top10_dest_list = jfk_top10_dest.index
 
-jfk_dest.pivot_table(index="dest", values="flight", aggfunc="count").sort_values("flight",ascending=False) #노선별 운항 횟수
-jfk_dest.pivot_table(index="dest", values=["dep_delay", "arr_delay"], aggfunc="mean") #노선별 출발/도착 지연 시간 평균
-jfk_dest.groupby(["dest","year","month","day"])[["dep_delay", "arr_delay"]].mean() #노선별, 날짜별 출발/도착 지연 시간 평균
-jfk_dest.groupby(["dest","year","month"]).agg(avg_arr_delay =("arr_delay","mean"),avg_dep_delay =("dep_delay","mean"),delay_ratio =("is_delayed","mean")).head(12)#노선별, 날짜별 출발/도착 지연 시간 평균
+# jfk_dest.pivot_table(index="dest", values="flight", aggfunc="count").sort_values("flight",ascending=False) #노선별 운항 횟수
+# jfk_dest.pivot_table(index="dest", values=["dep_delay", "arr_delay"], aggfunc="mean") #노선별 출발/도착 지연 시간 평균
+# jfk_dest.groupby(["dest","year","month","day"])[["dep_delay", "arr_delay"]].mean() #노선별, 날짜별 출발/도착 지연 시간 평균
+# jfk_dest.groupby(["dest","year","month"]).agg(avg_arr_delay =("arr_delay","mean"),avg_dep_delay =("dep_delay","mean"),delay_ratio =("is_delayed","mean")).head(12)#노선별, 날짜별 출발/도착 지연 시간 평균
 
 
 # JFK 출발 / 도착지 지연정보
@@ -94,6 +95,27 @@ jfk_delay_info = (jfk_flights[jfk_flights["dest"].isin(list(jfk_top10_dest_list)
                   .sort_values("arr_delay",ascending=False)
                 )   
 jfk_delay_info
+
+# 계절
+lights_data['is_delayed'] = flights_data['arr_delay'] > 15
+conditions = [
+    flights_data['month'].between(3, 5),    # 3~5월
+    flights_data['month'].between(6, 8),    # 6~8월
+    flights_data['month'].between(9, 11),   # 9~11월
+    (flights_data['month'] == 12) | (flights_data['month'] <= 2)  # 12~2월
+]
+choices = [1, 2, 3, 4]
+flights_data['season'] = np.select(conditions, choices)
+
+
+
+
+
+
+
+
+
+
 
 
 lga_flights = grouped_by_origin.get_group("LGA") #총 10067개 

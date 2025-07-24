@@ -1,0 +1,109 @@
+---
+title: "정시성을 최우선으로<br> 고려한 항공편 추천<br><br>"
+subtitle: "정시율 및 지연 패턴 분석 (요일, 시간대, 항공사)<br><br>"
+title-slide-attributes:
+    data-background-image: Airplane-Cartoon-PNG-Photo.png
+    data-background-size: contain
+    data-background-opacity: "0.05"
+author: 4조 - 도호현 강희준 김민지 박우림 안형엽
+format: 
+    revealjs:
+        logo: mascot01.png
+        theme: [serif]
+        reference-location: document
+        footer: "LS빅데이터스쿨 5기"
+---
+
+## 목차<br><br>
+
+1.  분석 배경<br>
+
+2.  데이터 전처리<br>
+
+3.  요일별/시간대별/항공사별 정시율<br>
+
+4.  공항별 인기 노선 선정<br>
+
+5.  노선별 정시율 분석<br>
+
+6.  결론
+
+##  {background-video="KakaoTalk_20250724_110211259.mp4," background-video-loop="true," background-video-muted="true\","}
+
+## 분석 배경<br><br> {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+![예시 이미지](complain.png){width="550" height="250"}
+:::
+
+::: {.column width="50%"}
+-   -최근 고객들로부터 "비행기 지연 때문에 현지 일정이 꼬였다", "연결 교통편을 놓쳤다", "출장 도착 시간에 맞추지 못했다" 등의 불만 사례가 반복적으로 접수되고 있습니다. <br>
+
+    -특히 단체 여행, VIP 고객, 출장객 등 시간에 민감한 고객층일수록 항공편의 정시성이 전체 일정 만족도에 직접적인 영향을 미치며, 이는 여행사 서비스의 신뢰도와도 직결됩니다.<br>
+
+    -이에 따라, 여행 상품 기획 단계에서부터 노선별 지연 가능성이 낮은 항공사와 요일 및 시간대를 기반으로 한 상품 구성이 필요하다는 내부 요구가 커졌습니다.
+:::
+:::::
+
+## 데이터 전처리
+
+파생변수 생성
+
+::::: columns
+::: {.column width="50%"}
+![(15분 초과의 지연만 간주함)](KakaoTalk_20250724_135058654.png){width="704" height="400"}
+:::
+
+::: {.column width="50%"}
+![(운행 흐름에 따라 시간대 범주화)](hour.png){width="592" height="400"}
+:::
+:::::
+
+## \[운항 정시율\]
+
+::: panel-tabset
+### 요일별
+
+![토요일 항공 수요가 상대적으로 낮고, 공항 운영 여유가 높아 지연 발생 가능성이 가장 낮음](per_day.png){width="989" height="400"}
+
+### 시간대별
+
+![예시 이미지](per_hour.png){width="989" height="400"}
+
+### 항공사별
+
+![예시 이미지](per_airline.png){width="1089" height="400"}
+:::
+
+## 공항별 인기 노선 TOP2<br><br>
+
+![](LGA.png){width="1389" height="500"}
+
+## 공항별 인기 노선 TOP2<br><br>
+
+![](JFK.png){width="1389" height="500"}
+
+## 공항별 인기 노선 TOP2<br><br>
+
+![](EWR.png){width="1389" height="500"}
+
+## JFK→LAX 정시 도착률
+
+::: panel-tabset
+### 요일별
+
+![](team4-graph/2.png){width="813" height="450"}
+
+### 시간대별
+
+![](team4-graph/1.png){width="989" height="450"}
+
+### 항공사별
+
+![](team4-graph/3.png){width="989" height="450"}
+:::
+
+## 결론<br><br>
+
+![](images/c.png){width="807"}
