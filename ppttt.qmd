@@ -5,13 +5,16 @@ title-slide-attributes:
     data-background-image: Airplane-Cartoon-PNG-Photo.png
     data-background-size: contain
     data-background-opacity: "0.05"
-author: 4조 - 도호현 강희준 김민지 박우림 안형엽
+author: 4조 <br><br> 도호현 강희준 김민지 박우림 안형엽
 format: 
     revealjs:
         logo: mascot01.png
         theme: [serif]
         reference-location: document
         footer: "LS빅데이터스쿨 5기"
+        aspect-ratio: 16:9
+        width: 1280
+        height: 720
 ---
 
 ## 목차<br><br>
@@ -34,48 +37,70 @@ format:
 
 ::::: columns
 ::: {.column width="50%"}
-![](complain.png)
-
-![](2.png)
+![예시 이미지](complain.png){width="550" height="250"}
 :::
 
 ::: {.column width="50%"}
--최근 고객들로부터 "비행기 지연 때문에 현지 일정이 꼬였다", "연결 교통편을 놓쳤다", "출장 도착 시간에 맞추지 못했다" 등의 불만 사례가 반복적으로 접수되고 있습니다. <br>
+-   -최근 고객들로부터 "비행기 지연 때문에 현지 일정이 꼬였다", "연결 교통편을 놓쳤다", "출장 도착 시간에 맞추지 못했다" 등의 불만 사례가 반복적으로 접수되고 있습니다. <br>
 
--특히 단체 여행, VIP 고객, 출장객 등 시간에 민감한 고객층일수록 항공편의 정시성이 전체 일정 만족도에 직접적인 영향을 미치며, 이는 여행사 서비스의 신뢰도와도 직결됩니다.<br>
+    -특히 단체 여행, VIP 고객, 출장객 등 시간에 민감한 고객층일수록 항공편의 정시성이 전체 일정 만족도에 직접적인 영향을 미치며, 이는 여행사 서비스의 신뢰도와도 직결됩니다.<br>
 
--이에 따라, 여행 상품 기획 단계에서부터 노선별 지연 가능성이 낮은 항공사와 요일 및 시간대를 기반으로 한 상품 구성이 필요하다는 내부 요구가 커졌습니다.
+    -이에 따라, 여행 상품 기획 단계에서부터 노선별 지연 가능성이 낮은 항공사와 요일 및 시간대를 기반으로 한 상품 구성이 필요하다는 내부 요구가 커졌습니다.
 :::
 :::::
 
 ## 데이터 전처리
 
-파생변수 생성
+### 파생변수 생성
 
-::::: columns
-::: {.column width="50%"}
-![(15분 초과의 지연만 간주함)](KakaoTalk_20250724_135058654.png){width="704" height="400"}
+#### 시간대 분류 및 특징
+
+:::::: columns
+::: {.column width="50%" style="font-size:0.55em;"}
+**항공교통서비스 보고서 요약**
+
+**‘2021 항공교통서비스 보고서’**에는 ‘23년 새로운 지연운항 기준 도입을 위하여 기존 활주로의 이·착륙을 기준으로 측정해오던 지연 기준을 게이트 출발·도착 기준으로 변경하여 인천공항의 지연율 시범조사한 결과를 수록하였다. 향후 다른 공항까지 조사를 확대할 계획이다.
+
+• 활주로 이륙·착륙 기준은\
+ • 국내선: 30분 초과\
+ • 국제선: 60분 초과 시 지연으로 측정\
+• 게이트 출발·도착 기준:\
+ • 국내선·국제선 모두 15분 초과 시 지연으로 측정
+
+※ 15분 초과의 지연만 간주함
 :::
 
-::: {.column width="50%"}
-![(운행 흐름에 따라 시간대 범주화)](hour.png){width="592" height="400"}
+:::: {.column width="50%" style="font-size:0.75em;"}
+::: {style="background-color:white; padding:10px; border-radius:5px;"}
+<strong>표. 시간대 분류 및 주요 특징</strong>
+
+| 시간대      | 특징      |
+|-------------|-----------|
+| 00:00-05:00 | 심야      |
+| 05:00-08:00 | 이른 아침 |
+| 08:00-11:00 | 아침 러시 |
+| 11:00-14:00 | 점심 이후 |
+| 14:00-17:00 | 오후      |
+| 17:00-20:00 | 저녁 러시 |
+| 20:00-24:00 | 야간      |
 :::
-:::::
+::::
+::::::
 
 ## 운항 정시율
 
 ::: panel-tabset
 ### 요일별
 
-![토요일에 정시율이 가장 높다.](per_day.png){width="989" height="400"}
+![토요일 항공 수요가 상대적으로 낮고, 공항 운영 여유가 높아 지연 발생 가능성이 가장 낮음](per_day.png){width="989" height="400"}
 
 ### 시간대별
 
-![05\~08시인 이른 아침에 정시율이 가장 높다.](per_hour.png)
+![예시 이미지](per_hour.png){width="989" height="400"}
 
 ### 항공사별
 
-![US,VX,DL,AA 순서대로 정시율이 높았다.](per_airline.png){width="1089" height="400"}
+![예시 이미지](per_airline.png){width="1089" height="400"}
 :::
 
 ## 운항 정시율
@@ -96,30 +121,32 @@ format:
 
 ## 공항별 인기 노선 TOP2<br><br>
 
-![](LGA.png){width="1389" height="500"}
+![](JFK.png){fig-align="center"}
 
 ## 공항별 인기 노선 TOP2<br><br>
 
-![](JFK.png){width="1006" height="504"}
+![](JFK.png){width="1389" height="500"}
 
 ## 공항별 인기 노선 TOP2<br><br>
 
-![](EWR.png){width="1389" height="500"}
+![](EWR.png){fig-align="center"}
 
 ## JFK→LAX 정시 도착률
 
 ::: panel-tabset
 ### 요일별
 
-![](team4-graph/2.png)
+![](team4-graph/2.png){width="813" height="450"}
 
 ### 시간대별
 
-![](team4-graph/1.png){width="989" height="450"}
+![](team4-graph/2.png){fig-align="center" width="626"}
 
 ### 항공사별
 
-![](team4-graph/3.png){width="989" height="450"}
+![](team4-graph/3.png){fig-align="center" width="626"}
 :::
 
 ## 결론<br><br>
+
+![](images/c.png){width="807"}
