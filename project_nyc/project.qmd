@@ -1,9 +1,7 @@
 ---
-title: "고객 만족도 향상을 위한 정시 항공편 추천 분석 or NYC 공항·항공사·노선별 정시성 분석을 통한 스마트 항공편 추천"
-format:
-  html:
-    code-fold: false
-jupyter: python3
+title: "나의 첫 Quarto 문서 만들기"
+format: html
+jupyter: python
 ---
 
 ## 고민중(삭제예정)

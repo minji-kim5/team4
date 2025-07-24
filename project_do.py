@@ -3,7 +3,11 @@ import nycflights13 as flights
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib as mpl
 
+# macOS에서 한글 폰트 설정
+mpl.rc('font', family='AppleGothic')
+plt.rcParams['axes.unicode_minus'] = False  # 마이너스 기호 깨짐 방지
 
 flights_data = flights.flights
 flights_data.head()
@@ -72,6 +76,9 @@ jfk_flights_L.groupby('new_hour')['is_delayed'].sum() / jfk_flights_L.groupby('n
 jfk_flights_L.groupby('week')['is_delayed'].sum() / jfk_flights_L.groupby('week')['is_delayed'].count()
 jfk_flights_L.groupby('carrier')['is_delayed'].sum() / jfk_flights_L.groupby('carrier')['is_delayed'].count()
 
+1 - jfk_flights_L.groupby('new_hour')['is_delayed'].mean()
+1 - jfk_flights_L.groupby('week')['is_delayed'].mean()
+1 - jfk_flights_L.groupby('carrier')['is_delayed'].mean()
 
 # 변수별 조합의 지연률
 result_L=jfk_flights_L.groupby(['new_hour','week','carrier'])['is_delayed'].sum() / jfk_flights_L.groupby(['new_hour','week','carrier'])['is_delayed'].count()
@@ -135,7 +142,7 @@ result_A = (
 result_A.sort_values(by='delay_rate')  
 result_A[result_A['total_count'] >= 30].sort_values(by='delay_rate') # 표본 수가 30이상만을 채택(정규성)
 
-# LGA > ORD
+# LGA > ORD,ATL
 lga_flights_O = lga_flights[lga_flights['dest'].isin(['ORD'])]
 
 lga_flights_O.groupby('new_hour')['is_delayed'].sum() / lga_flights_O.groupby('new_hour')['is_delayed'].count()
@@ -200,74 +207,3 @@ result_B = (
 result_B.sort_values(by='delay_rate')
 result_B[result_B['total_count'] >= 30].sort_values(by='delay_rate')
 
-# [JFK, LGA, EWR] 전체 막대 그래프 <함수화>
-def plot_top2_dest_by_origin(origin_name, color, korean_labels):
-    # 공항별 데이터 필터링
-    flights = flights_data[flights_data['origin'] == origin_name]
-    
-    # 도착지별 비행 횟수 집계
-    dest_counts = flights['dest'].value_counts()
-    top2_dest = dest_counts.head(2).index.tolist()
-    
-    # x 좌표 생성
-    x_positions = [i * 2.5 for i in range(len(dest_counts))]
-    
-    # 시각화 시작
-    plt.figure(figsize=(14, 6))
-    top2_coords = []
-    
-    for x, height, label in zip(x_positions, dest_counts.values, dest_counts.index):
-        if label in top2_dest:
-            plt.bar(x, height, color=color, width=2.0, zorder=10)
-            top2_coords.append((x, height, label))
-        else:
-            plt.bar(x, height, color='lightgray', width=1.2, zorder=5)
-    
-    # 한글 폰트
-    plt.rcParams['font.family'] = 'Malgun Gothic'
-    plt.rcParams['axes.unicode_minus'] = False
-    
-    # X축 라벨
-    custom_labels = [label if label in top2_dest else '' for label in dest_counts.index]
-    plt.xticks(x_positions, custom_labels, rotation=90)
-    
-    # 총 비행 수
-    total_count = dest_counts.sum()
-    
-    # 주석 추가
-    for x, y, label in top2_coords:
-        count = int(y)
-        percentage = count / total_count * 100
-        kor_name = korean_labels.get(label, label)
-        plt.annotate(f'{kor_name} ({label}): {count}편 ({percentage:.1f}%)',
-                     xy=(x, y), xycoords='data',
-                     xytext=(x + 70, y - 350), textcoords='data',
-                     arrowprops=dict(arrowstyle='->', color=color),
-                     fontsize=24, color=color, fontweight='bold',
-                     ha='left', va='bottom')
-    
-    # 축 및 제목
-    plt.xlabel('도착지', fontsize=20, fontweight='bold')
-    plt.ylabel('비행 횟수', fontsize=16, fontweight='bold')
-    plt.title(f'[{origin_name}] 도착지별 비행 횟수 (총 {len(dest_counts)}개)', fontsize=16, fontweight='bold')
-    
-    plt.tight_layout()
-    plt.show()
-
-# 한글 라벨 정의
-korean_labels = {
-    'LAX': '로스앤젤레스',
-    'SFO': '샌프란시스코',
-    'ATL': '애틀랜타',
-    'ORD': '시카고',
-    'BOS': '보스턴'
-}
-
-# JFK (파란색)
-plot_top2_dest_by_origin('JFK', 'royalblue', korean_labels)
-
-# LGA (오렌지색)
-plot_top2_dest_by_origin('LGA', 'orange', korean_labels)
-
-# EWR (연두색)
-plot_top2_dest_by_origin('EWR', 'yellowgreen', korean_labels)
