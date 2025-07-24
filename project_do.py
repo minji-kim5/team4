@@ -207,6 +207,8 @@ result_B = (
 result_B.sort_values(by='delay_rate')
 result_B[result_B['total_count'] >= 30].sort_values(by='delay_rate')
 
+<<<<<<< HEAD
+=======
 #시각화
 # index에 따라 시간대/요일/항공사별 정시 도착률 중 하나를 그림
 def plot_JFK_LAX(index):
@@ -712,3 +714,4 @@ result_L['요일'] = result_L['요일'].map(week_labels)
 result_L = result_L.drop(columns=['지연률'])
 result_L = result_L.reset_index(drop=True)
 result_L[result_L['전체운항'] >= 30].sort_values(by='정시율',ascending=False).head(7)
+>>>>>>> e7ed3cc116a06b36939f3ff57bd4c5a7303543df

@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+print("asdfsdaf")
+=======
 import pandas as pd
 import nycflights13 as flights
 import numpy as np
@@ -156,3 +159,4 @@ def change(index):
         return dl_filtered
 
 change("DL")
+>>>>>>> e7ed3cc116a06b36939f3ff57bd4c5a7303543df
