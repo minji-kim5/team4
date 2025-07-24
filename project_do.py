@@ -200,3 +200,198 @@ result_B = (
 result_B.sort_values(by='delay_rate')
 result_B[result_B['total_count'] >= 30].sort_values(by='delay_rate')
 
+# <희준> [JFK] 전체 막대그래프
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. JFK 출발 항공편
+jfk_flights = grouped_by_origin.get_group("JFK")
+
+# 2. 도착지별 비행 횟수
+dest_counts = jfk_flights["dest"].value_counts()
+jfk_top2_dest = dest_counts.head(2).index.tolist()
+
+# 3. x 좌표 생성 (간격 넓히기)
+x_positions = [i * 2.5 for i in range(len(dest_counts))]
+
+# 4. 시각화 시작
+plt.figure(figsize=(14, 6))
+
+# 파란색 막대 좌표 저장용
+top2_coords = []
+
+for x, height, label in zip(x_positions, dest_counts.values, dest_counts.index):
+    if label in jfk_top2_dest:
+        plt.bar(x, height, color='royalblue', width=2.0, zorder=10)
+        top2_coords.append((x, height, label))  # 좌표 저장
+    else:
+        plt.bar(x, height, color='lightgray', width=1.2, zorder=5)
+
+# 5. 한글 폰트 설정
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
+
+# 6. X축 라벨: LAX, SFO만 표시
+custom_labels = [label if label in jfk_top2_dest else '' for label in dest_counts.index]
+plt.xticks(x_positions, custom_labels, rotation=90)
+
+# 전체 비행 횟수
+total_count = dest_counts.sum()
+
+# 7. 화살표와 텍스트 주석 추가 (파란색 + 수치 + 퍼센트 + bold)
+for x, y, label in top2_coords:
+    count = int(y)
+    percentage = count / total_count * 100
+    if label == 'LAX':
+        plt.annotate(f'로스앤젤레스 (LAX): {count}편 ({percentage:.1f}%)',
+                     xy=(x, y), xycoords='data',
+                     xytext=(x + 150, y - 600), textcoords='data',
+                     arrowprops=dict(arrowstyle='->', color='royalblue'),
+                     fontsize=28, color='royalblue', fontweight='bold',
+                     ha='right', va='bottom')
+    elif label == 'SFO':
+        plt.annotate(f'샌프란시스코 (SFO): {count}편 ({percentage:.1f}%)',
+                     xy=(x, y), xycoords='data',
+                     xytext=(x + 50, y - 300), textcoords='data',
+                     arrowprops=dict(arrowstyle='->', color='royalblue'),
+                     fontsize=28, color='royalblue', fontweight='bold',
+                     ha='left', va='bottom')
+
+
+# 8. 축 및 제목
+plt.xlabel('도착지', fontsize=20, fontweight='bold')
+plt.ylabel('비행 횟수', fontsize=16, fontweight='bold')
+plt.title('[JFK] 도착지별 비행 횟수 (총 66가지)', fontsize=16, fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+
+# <희준> [LGA] 막대그래프
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. LGA 출발 항공편
+lga_flights = grouped_by_origin.get_group("LGA")
+
+# 2. 도착지별 비행 횟수
+dest_counts = lga_flights["dest"].value_counts()
+lga_top2_dest = dest_counts.head(2).index.tolist()
+
+# 3. x 좌표 생성 (간격 넓히기)
+x_positions = [i * 2.5 for i in range(len(dest_counts))]
+
+# 4. 시각화 시작
+plt.figure(figsize=(14, 6))
+
+# 파란색 막대 좌표 저장용
+top2_coords = []
+
+for x, height, label in zip(x_positions, dest_counts.values, dest_counts.index):
+    if label in lga_top2_dest:
+        plt.bar(x, height, color='orange', width=2.0, zorder=10)
+        top2_coords.append((x, height, label))  # 좌표 저장
+    else:
+        plt.bar(x, height, color='lightgray', width=1.2, zorder=5)
+
+# 5. 한글 폰트 설정
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
+
+# 6. X축 라벨: ATL, ORD만 표시
+custom_labels = [label if label in lga_top2_dest else '' for label in dest_counts.index]
+plt.xticks(x_positions, custom_labels, rotation=90)
+
+# 전체 비행 횟수
+total_count = dest_counts.sum()
+
+# 7. 화살표와 텍스트 주석 추가 (오렌지색)
+for x, y, label in top2_coords:
+    count = int(y)
+    percentage = count / total_count * 100
+    if label == 'ATL':
+        plt.annotate(f'애틀랜타 (ATL): {count}편 ({percentage:.1f}%)',
+                     xy=(x, y), xycoords='data',
+                     xytext=(x + 150, y - 600), textcoords='data',
+                     arrowprops=dict(arrowstyle='->', color='orange'),
+                     fontsize=28, color='orange', fontweight='bold',
+                     ha='right', va='bottom')
+    elif label == 'ORD':
+        plt.annotate(f'시카고 (ORD): {count}편 ({percentage:.1f}%)',
+                     xy=(x, y), xycoords='data',
+                     xytext=(x + 50, y - 300), textcoords='data',
+                     arrowprops=dict(arrowstyle='->', color='orange'),
+                     fontsize=28, color='orange', fontweight='bold',
+                     ha='left', va='bottom')
+
+# 8. 축 및 제목
+plt.xlabel('도착지', fontsize=20, fontweight='bold')
+plt.ylabel('비행 횟수', fontsize=16, fontweight='bold')
+plt.title('[LGA] 도착지별 비행 횟수 (총 68가지)', fontsize=16, fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+
+# <희준> [EWR] 막대그래프
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. EWR 출발 항공편
+ewr_flights = grouped_by_origin.get_group("EWR")
+
+# 2. 도착지별 비행 횟수
+dest_counts = ewr_flights["dest"].value_counts()
+ewr_top2_dest = dest_counts.head(2).index.tolist()
+
+# 3. x 좌표 생성 (간격 넓히기)
+x_positions = [i * 2.5 for i in range(len(dest_counts))]
+
+# 4. 시각화 시작
+plt.figure(figsize=(14, 6))
+
+# 파란색 막대 좌표 저장용
+top2_coords = []
+
+for x, height, label in zip(x_positions, dest_counts.values, dest_counts.index):
+    if label in ewr_top2_dest:
+        plt.bar(x, height, color='yellowgreen', width=2.0, zorder=10)
+        top2_coords.append((x, height, label))  # 좌표 저장
+    else:
+        plt.bar(x, height, color='lightgray', width=1.2, zorder=5)
+
+# 5. 한글 폰트 설정
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
+
+# 6. X축 라벨: 상위 2개만 표시
+custom_labels = [label if label in ewr_top2_dest else '' for label in dest_counts.index]
+plt.xticks(x_positions, custom_labels, rotation=90)
+
+# 전체 비행 횟수
+total_count = dest_counts.sum()
+
+# 7. 화살표와 텍스트 주석 추가 (연두색)
+for x, y, label in top2_coords:
+    count = int(y)
+    percentage = count / total_count * 100
+    if label == ewr_top2_dest[0]:
+        plt.annotate(f'시카고(ORD) : {count}편 ({percentage:.1f}%)',
+                     xy=(x, y), xycoords='data',
+                     xytext=(x + 150, y - 300), textcoords='data',
+                     arrowprops=dict(arrowstyle='->', color='yellowgreen'),
+                     fontsize=28, color='yellowgreen', fontweight='bold',
+                     ha='right', va='bottom')
+    elif label == ewr_top2_dest[1]:
+        plt.annotate(f'보스턴(BOS): {count}편 ({percentage:.1f}%)',
+                     xy=(x, y), xycoords='data',
+                     xytext=(x + 50, y - 300), textcoords='data',
+                     arrowprops=dict(arrowstyle='->', color='yellowgreen'),
+                     fontsize=28, color='yellowgreen', fontweight='bold',
+                     ha='left', va='bottom')
+
+# 8. 축 및 제목
+plt.xlabel('도착지', fontsize=20, fontweight='bold')
+plt.ylabel('비행 횟수', fontsize=16, fontweight='bold')
+plt.title('[EWR] 도착지별 비행 횟수 (총 85가지)', fontsize=16, fontweight='bold')
+
+plt.tight_layout()
+plt.show()
