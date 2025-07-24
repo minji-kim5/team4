@@ -1,145 +1,3 @@
----
-title: "정시성을 최우선으로<br> 고려한 항공편 추천<br><br>"
-subtitle: "정시율 및 지연 패턴 분석 (요일, 시간대, 항공사)<br><br>"
-title-slide-attributes:
-    data-background-image: Airplane-Cartoon-PNG-Photo.png
-    data-background-size: contain
-    data-background-opacity: "0.05"
-author: 4조 <br><br> 도호현 강희준 김민지 박우림 안형엽
-format: 
-    revealjs:
-        logo: mascot01.png
-        theme: [serif]
-        reference-location: document
-        footer: "LS빅데이터스쿨 5기"
-        aspect-ratio: 16:9
-        width: 1280
-        height: 720
----
-
-## 목차<br><br>
-
-1.  분석 배경<br>
-
-2.  데이터 전처리<br>
-
-3.  요일별/시간대별/항공사별 정시율<br>
-
-4.  공항별 인기 노선 선정<br>
-
-5.  노선별 정시율 분석<br>
-
-6.  결론
-
-##  {background-video="KakaoTalk_20250724_110211259.mp4," background-video-loop="true," background-video-muted="true\","}
-
-## 분석 배경<br><br> {.smaller}
-
-• 최근 고객들로부터 “비행기 지연으로 현지 일정이 차질을 빚었다”, “연결 교통편을 놓쳤다”, “출장 시간에 맞춰 도착하지 못했다” 등의 불만이 반복적으로 접수되고 있습니다.
-
-• 특히 단체 여행객, VIP, 출장 고객 등 시간에 민감한 고객층에게 항공편의 정시성은 전체 일정 만족도와 여행사의 신뢰도에 직접적인 영향을 미칩니다.
-
-• 이에 따라, 여행 상품 기획 단계에서부터 노선별 지연 가능성을 고려한 항공사, 요일, 시간대 기반의 정시성 분석이 필요하다는 내부 요구가 커지고 있습니다.
-
-<br>
-
-<p style="text-align:right; font-size:0.8em; font-weight:bold; color:#666;">
-
-\[뉴스 기사\]
-
-</p>
-
-::: {style="text-align:right;"}
-<img src="complain.png" style="width:60%;"/><br>
-:::
-
-## 데이터 전처리
-
-### 파생변수 생성
-
-#### 시간대 분류 및 특징
-
-:::::: columns
-::: {.column width="50%" style="font-size:0.55em;"}
-**항공교통서비스 보고서 요약**
-
-**‘2021 항공교통서비스 보고서’**에는 ‘23년 새로운 지연운항 기준 도입을 위하여 기존 활주로의 이·착륙을 기준으로 측정해오던 지연 기준을 게이트 출발·도착 기준으로 변경하여 인천공항의 지연율 시범조사한 결과를 수록하였다. 향후 다른 공항까지 조사를 확대할 계획이다.
-
-• 활주로 이륙·착륙 기준은\
- • 국내선: 30분 초과\
- • 국제선: 60분 초과 시 지연으로 측정\
-• 게이트 출발·도착 기준:\
- • 국내선·국제선 모두 15분 초과 시 지연으로 측정
-
-※ 15분 초과의 지연만 간주함
-:::
-
-:::: {.column width="50%" style="font-size:0.75em;"}
-::: {style="background-color:white; padding:10px; border-radius:5px;"}
-<strong>표. 시간대 분류 및 주요 특징</strong>
-
-| 시간대      | 특징      |
-|-------------|-----------|
-| 00:00-05:00 | 심야      |
-| 05:00-08:00 | 이른 아침 |
-| 08:00-11:00 | 아침 러시 |
-| 11:00-14:00 | 점심 이후 |
-| 14:00-17:00 | 오후      |
-| 17:00-20:00 | 저녁 러시 |
-| 20:00-24:00 | 야간      |
-:::
-::::
-::::::
-
-## \[운항 정시율\]
-
-::: panel-tabset
-### 요일별
-
-![](per_day.png){fig-align="center"}
-
-### 시간대별
-
-![](per_hour.png){fig-align="center"}
-
-### 항공사별
-
-![](per_airline.png){fig-align="center"}
-:::
-
-## 공항별 인기 노선 TOP2<br><br>
-
-![](JFK.png){fig-align="center"}
-
-## 공항별 인기 노선 TOP2<br><br>
-
-![](LGA.png){fig-align="center"}
-
-## 공항별 인기 노선 TOP2<br><br>
-
-![](EWR.png){fig-align="center"}
-
-## JFK→LAX 정시 도착률
-
-::: panel-tabset
-### 요일별
-
-![](team4-graph/1.png){fig-align="center" width="626"}
-
-### 시간대별
-
-![](team4-graph/2.png){fig-align="center" width="626"}
-
-### 항공사별
-
-![](team4-graph/3.png){fig-align="center" width="626"}
-:::
-
-## 결론<br><br>
-
-```{python}
-#| echo: false
-#| results: asis
 import pandas as pd
 import nycflights13 as flights
 import numpy as np
@@ -149,11 +7,11 @@ import seaborn as sns
 def change(index):
     flights_data = flights.flights
     flights_data.head()
-    # flights_data.info()
+    flights_data.info()
 
     flights_data.isna().sum() # 결측치 확인
     flights_data = flights_data.dropna() # 결측치 삭제
-    # flights_data.info() 
+    flights_data.info() 
 
 
 
@@ -252,7 +110,7 @@ def change(index):
     result_L['지연률'] = (result_L['지연건수'] / result_L['전체운항'] * 100).round(2)
 
     # 인덱스 없이 출력
-    # print(result_L.to_string(index=False))
+    print(result_L.to_string(index=False))
 
     hour_labels = {
         1: '0–5시',
@@ -298,4 +156,3 @@ def change(index):
         return dl_filtered
 
 change("DL")
-```
