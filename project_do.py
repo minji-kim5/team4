@@ -663,3 +663,52 @@ def plot_EWR_BOS(index):
 plot_EWR_BOS(1)
 plot_EWR_BOS(2)
 plot_EWR_BOS(3)
+
+
+result_L['on_time'] = 1 - result_L['delay_rate']
+result_L
+# 1. delay_rate 열 삭제
+result_L = result_L.drop(columns=['delay_rate'])
+
+# 2. 변수명 한글로 변경
+result_L = result_L.rename(columns={
+    'new_hour': '시간대',
+    'week': '요일',
+    'carrier': '항공사',
+    'delay_count': '지연건수',
+    'total_count': '전체운항',
+    'on_time': '정시율'
+})
+
+# 3. 백분율로 변환 및 반올림result_L['정시율'] = (result_L['정시율'] * 100).round(2)
+result_L['지연률'] = (result_L['지연건수'] / result_L['전체운항'] * 100).round(2)
+
+# 인덱스 없이 출력
+print(result_L.to_string(index=False))
+
+hour_labels = {
+    1: '0–5시',
+    2: '5–8시',
+    3: '8–11시',
+    4: '11–14시',
+    5: '14–17시',
+    6: '17–20시',
+    7: '20–24시'
+}
+result_L['시간대'] = result_L['시간대'].map(hour_labels)
+
+week_labels = {
+    0: '월요일',
+    1: '화요일',
+    2: '수요일',
+    3: '목요일',
+    4: '금요일',
+    5: '토요일',
+    6: '일요일'
+}
+result_L['요일'] = result_L['요일'].map(week_labels)
+
+
+result_L = result_L.drop(columns=['지연률'])
+result_L = result_L.reset_index(drop=True)
+result_L[result_L['전체운항'] >= 30].sort_values(by='정시율',ascending=False).head(7)
