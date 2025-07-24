@@ -107,22 +107,6 @@ format:
 ![](per_airline.png){fig-align="center"}
 :::
 
-## 운항 정시율
-
-![](images/paste-2.png)
-
-## 운항 정시율
-
-::::: columns
-::: {.column width="50%"}
-![실제로 인천공항을 출발하는 시간대별 국제선 항공기 운항 데이터에서도 06\~08시인 이른 아침에 지연율이 가장 낮음을 확인할 수 있습니다.](https://img.sbs.co.kr/newimg/news/20170905/201090121_1280.jpg)
-:::
-
-::: {.column width="50%"}
-![공항이 덜 혼잡하고, 항공 교통 체증이 적기 때문에 이른 오전 시간에 정시율이 높다.](delay_hour.png)
-:::
-:::::
-
 ## 공항별 인기 노선 TOP2<br><br>
 
 ![](JFK.png){fig-align="center"}
