@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="ppt_files/libs/clipboard/clipboard.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="ppt_files/libs/clipboard/clipboard.min.js"></script>
 <script src="ppt_files/libs/quarto-html/tabby.min.js"></script>
 <script src="ppt_files/libs/quarto-html/popper.min.js"></script>
 <script src="ppt_files/libs/quarto-html/tippy.umd.min.js"></script>
@@ -9,7 +9,7 @@
 <link href="ppt_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.32">
 
-  <meta name="author" content="4조 - 도호현 강희준 김민지 박우림 안형엽">
+  <meta name="author" content="4조   도호현 강희준 김민지 박우림 안형엽">
   <title>정시성을 최우선으로  고려한 항공편 추천 </title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -121,6 +121,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+  
+  <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -133,7 +136,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-4조 - 도호현 강희준 김민지 박우림 안형엽 
+4조 <br><br> 도호현 강희준 김민지 박우림 안형엽 
 </div>
 </div>
 </div>
@@ -155,39 +158,72 @@
 </section>
 <section id="분석-배경" class="slide level2 smaller">
 <h2>분석 배경<br><br></h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="complain.png" width="550" height="250"></p>
-<figcaption>예시 이미지</figcaption>
-</figure>
+<p>• 최근 고객들로부터 “비행기 지연으로 현지 일정이 차질을 빚었다”, “연결 교통편을 놓쳤다”, “출장 시간에 맞춰 도착하지 못했다” 등의 불만이 반복적으로 접수되고 있습니다.</p>
+<p>• 특히 단체 여행객, VIP, 출장 고객 등 시간에 민감한 고객층에게 항공편의 정시성은 전체 일정 만족도와 여행사의 신뢰도에 직접적인 영향을 미칩니다.</p>
+<p>• 이에 따라, 여행 상품 기획 단계에서부터 노선별 지연 가능성을 고려한 항공사, 요일, 시간대 기반의 정시성 분석이 필요하다는 내부 요구가 커지고 있습니다.</p>
+<p><br></p>
+<p style="text-align:right; font-size:0.8em; font-weight:bold; color:#666;">
+</p><p>[뉴스 기사]</p>
+<p></p>
+<div style="text-align:right;">
+<p><img src="complain.png" style="width:60%;"><br></p>
 </div>
-</div><div class="column" style="width:50%;">
-<ul>
-<li><p>-최근 고객들로부터 “비행기 지연 때문에 현지 일정이 꼬였다”, “연결 교통편을 놓쳤다”, “출장 도착 시간에 맞추지 못했다” 등의 불만 사례가 반복적으로 접수되고 있습니다. <br></p>
-<p>-특히 단체 여행, VIP 고객, 출장객 등 시간에 민감한 고객층일수록 항공편의 정시성이 전체 일정 만족도에 직접적인 영향을 미치며, 이는 여행사 서비스의 신뢰도와도 직결됩니다.<br></p>
-<p>-이에 따라, 여행 상품 기획 단계에서부터 노선별 지연 가능성이 낮은 항공사와 요일 및 시간대를 기반으로 한 상품 구성이 필요하다는 내부 요구가 커졌습니다.</p></li>
-</ul>
-</div></div>
 </section>
 <section id="데이터-전처리" class="slide level2">
 <h2>데이터 전처리</h2>
-<p>파생변수 생성</p>
+<h3 id="파생변수-생성">파생변수 생성</h3>
+<h4 id="시간대-분류-및-특징">시간대 분류 및 특징</h4>
 <div class="columns">
-<div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="KakaoTalk_20250724_135058654.png" width="704" height="400"></p>
-<figcaption>(15분 초과의 지연만 간주함)</figcaption>
-</figure>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="hour.png" width="592" height="400"></p>
-<figcaption>(운행 흐름에 따라 시간대 범주화)</figcaption>
-</figure>
+<div class="column" style="font-size:0.55em;">
+<p><strong>항공교통서비스 보고서 요약</strong></p>
+<p><strong>‘2021 항공교통서비스 보고서’</strong>에는 ’23년 새로운 지연운항 기준 도입을 위하여 기존 활주로의 이·착륙을 기준으로 측정해오던 지연 기준을 게이트 출발·도착 기준으로 변경하여 인천공항의 지연율 시범조사한 결과를 수록하였다. 향후 다른 공항까지 조사를 확대할 계획이다.</p>
+<p>• 활주로 이륙·착륙 기준은<br>
+ • 국내선: 30분 초과<br>
+ • 국제선: 60분 초과 시 지연으로 측정<br>
+• 게이트 출발·도착 기준:<br>
+ • 국내선·국제선 모두 15분 초과 시 지연으로 측정</p>
+<p>※ 15분 초과의 지연만 간주함</p>
+</div><div class="column" style="font-size:0.75em;">
+<div style="background-color:white; padding:10px; border-radius:5px;">
+<p><strong>표. 시간대 분류 및 주요 특징</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>시간대</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>00:00-05:00</td>
+<td>심야</td>
+</tr>
+<tr class="even">
+<td>05:00-08:00</td>
+<td>이른 아침</td>
+</tr>
+<tr class="odd">
+<td>08:00-11:00</td>
+<td>아침 러시</td>
+</tr>
+<tr class="even">
+<td>11:00-14:00</td>
+<td>점심 이후</td>
+</tr>
+<tr class="odd">
+<td>14:00-17:00</td>
+<td>오후</td>
+</tr>
+<tr class="even">
+<td>17:00-20:00</td>
+<td>저녁 러시</td>
+</tr>
+<tr class="odd">
+<td>20:00-24:00</td>
+<td>야간</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div></div>
 </section>
@@ -199,24 +235,21 @@
 <div id="tabset-1-1">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="per_day.png" width="989" height="400"></p>
-<figcaption>토요일 항공 수요가 상대적으로 낮고, 공항 운영 여유가 높아 지연 발생 가능성이 가장 낮음</figcaption>
+<p><img data-src="per_day.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div>
 <div id="tabset-1-2">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="per_hour.png" width="989" height="400"></p>
-<figcaption>예시 이미지</figcaption>
+<p><img data-src="per_hour.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div>
 <div id="tabset-1-3">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="per_airline.png" width="1089" height="400"></p>
-<figcaption>예시 이미지</figcaption>
+<p><img data-src="per_airline.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div>
@@ -225,38 +258,116 @@
 </section>
 <section id="공항별-인기-노선-top2" class="slide level2">
 <h2>공항별 인기 노선 TOP2<br><br></h2>
-<p><img data-src="LGA.png" width="1389" height="500"></p>
-</section>
+
+<img data-src="JFK.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="공항별-인기-노선-top2-1" class="slide level2">
 <h2>공항별 인기 노선 TOP2<br><br></h2>
-<p><img data-src="JFK.png" width="1389" height="500"></p>
-</section>
+
+<img data-src="LGA.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="공항별-인기-노선-top2-2" class="slide level2">
 <h2>공항별 인기 노선 TOP2<br><br></h2>
-<p><img data-src="EWR.png" width="1389" height="500"></p>
-</section>
+
+<img data-src="EWR.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="jfklax-정시-도착률" class="slide level2">
 <h2>JFK→LAX 정시 도착률</h2>
 <div class="panel-tabset">
 <ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">요일별</a></li><li><a href="#tabset-2-2">시간대별</a></li><li><a href="#tabset-2-3">항공사별</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1">
-<p><img data-src="team4-graph/2.png" width="813" height="450"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="team4-graph/1.png" class="quarto-figure quarto-figure-center" width="626"></p>
+</figure>
+</div>
 </div>
 <div id="tabset-2-2">
-<p><img data-src="team4-graph/1.png" width="989" height="450"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="team4-graph/2.png" class="quarto-figure quarto-figure-center" width="626"></p>
+</figure>
+</div>
 </div>
 <div id="tabset-2-3">
-<p><img data-src="team4-graph/3.png" width="989" height="450"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="team4-graph/3.png" class="quarto-figure quarto-figure-center" width="626"></p>
+</figure>
+</div>
 </div>
 </div>
 </div>
 </section>
 <section id="결론" class="slide level2">
 <h2>결론<br><br></h2>
+<div id="9014bf31" class="cell" data-results="asis" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<img data-src="images/c.png" width="807" class="r-stretch"></section>
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+<table class="dataframe caption-top" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header" style="text-align: right;">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">시간대</th>
+<th data-quarto-table-cell-role="th">요일</th>
+<th data-quarto-table-cell-role="th">지연건수</th>
+<th data-quarto-table-cell-role="th">전체운항</th>
+<th data-quarto-table-cell-role="th">정시율</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">항공사</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">DL</td>
+<td>8–11시</td>
+<td>금요일</td>
+<td>1</td>
+<td>50</td>
+<td>98.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">DL</td>
+<td>8–11시</td>
+<td>토요일</td>
+<td>2</td>
+<td>52</td>
+<td>96.15</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">DL</td>
+<td>11–14시</td>
+<td>토요일</td>
+<td>2</td>
+<td>43</td>
+<td>95.35</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="mascot01.png" class="slide-logo"></p>
@@ -439,9 +550,9 @@
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1280,
 
-        height: 700,
+        height: 720,
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,
